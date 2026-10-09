@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from anthropic import APIStatusError, APITimeoutError, RateLimitError
-
+import grounding
 
 import knowledge_store as knowledge
 import llm
@@ -11,12 +11,11 @@ import llm
 RELEVANCE_FLOOR = 0.35
 
 
-router = APIRouter(prefix="/knowledge",tags=["knowledge"]
-)
+router = APIRouter(prefix="/knowledge",tags=["knowledge"])
 
 
 class Question(BaseModel):
-    question: str
+    question: str = Field(min_length=3)
     top_k: int = Field(default=3, ge=0, le=8)
 
 @router.post("/index")
@@ -84,11 +83,6 @@ def ask(q: Question):
         print("ANTHROPIC ERROR:", e)
         raise HTTPException(status_code=502, detail=str(e))
 
-    
-    
-        
-        
-
 
     #4. Return the successful answer
     return {
@@ -99,4 +93,5 @@ def ask(q: Question):
         "input_tokens": result["input_tokens"],
         "output_tokens": result["output_tokens"],
         "stop_reason": result["stop_reason"],
+        "grounding": grounding.check_citations(result["answer"], [h["id"] for h in usable])
     }

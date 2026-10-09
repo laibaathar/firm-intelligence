@@ -68,6 +68,7 @@ def ask_with_tools(question:str) -> dict:
         # response content - when added to messages per round
         tool_blocks = [b for b in response.content if b.type == "tool_use"]
         messages.append({"role": "assistant", "content": response.content})
+    
 
         tool_results = []
         for tool_block in tool_blocks:
@@ -83,6 +84,15 @@ def ask_with_tools(question:str) -> dict:
             })
 
         messages.append({"role": "user", "content": tool_results})
+
+    return {
+        "answer": "",
+        "complicated": True,
+        "tool_calls_made": tool_calls_made,
+        "input_tokens": total_input_tokens,
+        "output_tokens": total_output_tokens,
+        "stop_reason": "max_iterations",
+    }
 
 
 

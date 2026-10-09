@@ -1,0 +1,57 @@
+==================================================
+QUESTION:  Who is the managing partner of Harding & Voss, and how long have they held the role?
+
+n-- loose prompt ```
+Based on the document provided [doc-101], the specific name of the managing partner is not mentioned, nor is information about how long they have held the role.
+
+The document only references that "The managing partner told the partnership that the priority for the next two years is margin, not size," but does not identify who this person is or provide details about their tenure in the position.
+
+To obtain this information, you would need to consult additional sources such as the firm's website, leadership page, or other corporate documents.
+
+  refusal: False passed: False
+ UNCITED: The document only references that "The managing partner told the partnership that the priority for the next two years is margin, not size," but does not identify who this person is or provide details about their tenure in the position.
+ UNCITED: To obtain this information, you would need to consult additional sources such as the firm's website, leadership page, or other corporate documents.
+
+n-- grounded prompt ```
+The provided documents do not answer that question.
+
+The document mentions that "the managing partner told the partnership that the priority for the next two years is margin, not size" [doc-101], but it does not provide the managing partner's name or state how long they have held the role.
+
+  refusal: True passed: True
+==================================================
+QUESTION:  How does Harding & Voss's profitability compare with the Magic Circle firms?
+
+n-- loose prompt ```
+# Profitability Comparison with Magic Circle Firms
+
+The document [doc-101] does not contain information that would allow a comparison of Harding & Voss's profitability with Magic Circle firms.
+
+The Annual Strategy Review provides revenue figures ($1.24 billion) and some operational metrics, but it does not disclose:
+- Profit or profit margins
+- Profit per partner (PEP)
+- Profit per lawyer
+- Other profitability benchmarks
+- Any comparative data about Magic Circle firms
+
+To answer your question accurately, you would need access to:
+1. Harding & Voss's detailed financial statements showing profit figures
+2. Corresponding financial data for Magic Circle firms (typically Clifford Chance, Freshfields Bruckhaus Deringer, Linklaters, Allen & Company, and Slaughter and May)
+
+The document does indicate that management is prioritizing "margin, not size" going forward [doc-101], which suggests profitability is a focus area, but actual profitability metrics are not disclosed.
+
+  refusal: False passed: False
+ UNCITED: # Profitability Comparison with Magic Circle Firms
+ UNCITED: The Annual Strategy Review provides revenue figures ($1.24 billion) and some operational metrics, but it does not disclose:
+ UNCITED: Profit or profit margins
+ UNCITED: Profit per partner (PEP)
+ UNCITED: Profit per lawyer
+ UNCITED: Other profitability benchmarks
+ UNCITED: Any comparative data about Magic Circle firms
+ UNCITED: To answer your question accurately, you would need access to:
+ UNCITED: Harding & Voss's detailed financial statements showing profit figures
+ UNCITED: Corresponding financial data for Magic Circle firms (typically Clifford Chance, Freshfields Bruckhaus Deringer, Linklaters, Allen & Company, and Slaughter and May)
+
+n-- grounded prompt ```
+The provided documents do not answer that question.
+
+  refusal: True passed: True
