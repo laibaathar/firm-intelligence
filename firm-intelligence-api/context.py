@@ -14,3 +14,7 @@ def order_for_context(hits: list[dict]) -> list[dict]:
     front = ranked[0::2] # a, c, e
     back = ranked[1::2]  # b, d
     return front + back[::-1] # a, c, e, d, b
+
+def build_context(hits: list[dict]) -> str:
+    """The exact text block the model sees, one labelled section per hit."""
+    return "\n\n".join(f"[{h['id']}] {h['title']}\n{h['text']}" for h in order_for_context(hits))
