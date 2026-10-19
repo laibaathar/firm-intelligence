@@ -89,29 +89,42 @@ def build(strategy: str, force: bool = False) -> dict:
 # it takes question vectors that are already embedded,so questions are embeded once and requested across all 6 categories
 
 def search_with_vectors(strategy: str, query_vectors: list[list[float]], k: int) -> list[list[dict]]:
-    """
-    We embed the question once, then searches many strategies with the same vectors.
-    """
-
+    """Ranked hits for every query vector. Takes vectors, so questions are embedded only once."""
     col = collection_for(strategy)
     if col.count() == 0:
         raise RuntimeError(f"Index for '{strategy}' is empty, build it first")
+    n_results = min(k, col.count())
+    ranked = []
+    for vector in query_vectors:                                      # one question at a time[cite: 1]
+        result = col.query(query_embeddings=[vector], n_results=n_results)
+        ranked.append([
+            {"id": meta["doc_id"], "chunk_id": chunk_id, "title": meta["title"],
+             "text": text, "score": 1 - distance}
+            for chunk_id, text, meta, distance in zip(
+                result["ids"][0], result["documents"][0], result["metadatas"][0], result["distances"][0])
+        ])
+    return ranked
 
-    # the search
-    result = col.query(query_embeddings = query_vectors, n_results = min(k, col.count()))
 
-    # what result looks like
-      # result["ids"] - a list of 2 lists, each holding 3 ids
-      # result["documents"] - a list of 2 lists, each holding 3 texts
-      # result["metadatas"] - a list of 2 lists, each holding 3 metadatas dictionairies
-      # result["distances"] - a list of 2 lists, each holding 3 distances
-      # e.g. ids ['doc001#00', 'doc-101#01', 'doc-107#00']
-      # e.g. distances [0.375, 0.389, 0.30]
-    return [
-        # Chroma returns 4 parallel nested list
-        [
-            {"id": meta["doc_id"], "chunk_id": chunk_id, "title": meta["title"], "text": text, "score": 1-distance}
-            for chunk_id, text, meta, distance in zip(ids, docs, metas, dists)
-        ]
-        for ids, docs, metas, dists in zip(result["ids"], result["documents"], result["metadatas"], result["distances"])
-    ]
+
+
+"""
+a chunk that only keyword search found has no cosine score.. our relevance gate needs one"""
+
+def cosine_for(strategy: str, query_vector: list[float], chunk_ids: list[str]) -> dict[str, float]:
+    if not chunk_ids:
+        return {}
+    stored = collection_for(strategy).get(ids=chunk_ids, include = ["embeddings"])
+
+    return {
+        chunk_id: float(knowledge.cosine_similarity(query_vector, list(vector)))
+        for chunk_id, vector in zip(stored["ids"], stored["embeddings"])
+    }
+
+# where it fits in hybrid.py
+  # vector search return its top 10 with a cosine
+  # keyword search returns its top 10
+  # RRF merges them
+  # any chunk in the keyword list but NOT in the vector list is passed to "cosine_for"
+  # now every hit has a cosine... so the gate works the same on all of them
+    # score >= 0.45 orr exact_match
